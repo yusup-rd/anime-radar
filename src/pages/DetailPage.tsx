@@ -73,7 +73,7 @@ const DetailPage = () => {
           <img
             src={selectedAnime.images.jpg.large_image_url}
             alt={selectedAnime.title}
-            className="h-full w-full object-cover object-center"
+            className="size-full object-cover object-center"
           />
           <div className="from-background via-background/60 absolute inset-0 bg-linear-to-t to-transparent"></div>
           <div className="from-background absolute inset-0 bg-linear-to-r via-transparent to-transparent"></div>
