@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaTrophy, FaThumbsUp } from 'react-icons/fa';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchTopAnime, fetchRecommendedAnime } from '../store/animeSlice';
 import Pagination from '../components/Layout/Pagination';
@@ -128,6 +129,7 @@ const HomePage = () => {
             {/* Top Anime Swiper */}
             <AnimeSwiper
               title="Top Anime"
+              icon={<FaTrophy className="text-primary" />}
               animeList={topAnime}
               onAnimeClick={handleAnimeClick}
               loading={topAnime.length === 0}
@@ -136,6 +138,7 @@ const HomePage = () => {
             {/* Recommended Anime Swiper */}
             <AnimeSwiper
               title="Recommended Anime"
+              icon={<FaThumbsUp className="text-primary" />}
               animeList={recommendedAnime}
               onAnimeClick={handleAnimeClick}
               loading={recommendedAnime.length === 0}

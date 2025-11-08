@@ -5,6 +5,7 @@ import AnimeCard from '../Card/AnimeCard';
 
 interface AnimeSwiperProps {
   title: string;
+  icon?: React.ReactNode;
   animeList: Anime[];
   onAnimeClick: (animeId: number) => void;
   loading?: boolean;
@@ -12,6 +13,7 @@ interface AnimeSwiperProps {
 
 const AnimeSwiper = ({
   title,
+  icon,
   animeList,
   onAnimeClick,
   loading,
@@ -19,7 +21,10 @@ const AnimeSwiper = ({
   if (loading) {
     return (
       <div className="mb-12">
-        <h2 className="text-foreground mb-6 text-3xl font-bold">{title}</h2>
+        <h2 className="text-foreground mb-6 flex items-center gap-3 text-3xl font-bold">
+          {icon}
+          {title}
+        </h2>
         <div className="flex gap-4">
           {[...Array(5)].map((_, i) => (
             <div
@@ -34,7 +39,10 @@ const AnimeSwiper = ({
 
   return (
     <div className="mb-12">
-      <h2 className="text-foreground mb-6 text-3xl font-bold">{title}</h2>
+      <h2 className="text-foreground mb-6 flex items-center gap-3 text-3xl font-bold">
+        {icon}
+        {title}
+      </h2>
       <Swiper
         modules={[Autoplay]}
         spaceBetween={20}
