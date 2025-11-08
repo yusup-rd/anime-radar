@@ -20,7 +20,12 @@ const HomePage = () => {
     totalPages,
     hasNextPage,
     searchQuery,
+    searchFilters,
   } = useAppSelector((state) => state.anime);
+
+  // Check if filters are active
+  const hasActiveFilters = Object.keys(searchFilters).length > 0;
+  const showSearchResults = searchQuery || hasActiveFilters;
 
   // Fetch top and recommended anime on mount
   useEffect(() => {
@@ -41,7 +46,7 @@ const HomePage = () => {
     <div className="min-h-screen">
       <div className="container py-8">
         {/* Search results */}
-        {searchQuery && (
+        {showSearchResults && (
           <>
             {/* Loading State */}
             {loading && (
@@ -64,7 +69,9 @@ const HomePage = () => {
             {!loading && searchResults.length > 0 && (
               <>
                 <h2 className="text-foreground mb-6 text-3xl font-bold">
-                  Search Results for "{searchQuery}"
+                  {searchQuery
+                    ? `Search Results for "${searchQuery}"`
+                    : 'Filtered Results'}
                 </h2>
                 <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
                   {searchResults.map((anime) => (
@@ -90,10 +97,15 @@ const HomePage = () => {
             {!loading && searchResults.length === 0 && (
               <div className="py-12 text-center">
                 <p className="text-foreground text-xl">
-                  No anime found for "{searchQuery}"
+                  {searchQuery
+                    ? `No anime found for "${searchQuery}"`
+                    : 'No anime found with these filters'}
                 </p>
                 <p className="text-foreground/60 mt-2">
-                  Try searching with different keywords
+                  Try{' '}
+                  {searchQuery
+                    ? 'searching with different keywords'
+                    : 'adjusting your filters'}
                 </p>
               </div>
             )}
@@ -101,7 +113,7 @@ const HomePage = () => {
         )}
 
         {/* Default homepage */}
-        {!searchQuery && (
+        {!showSearchResults && (
           <>
             {/* Hero Section */}
             <div className="mb-12 text-center">
