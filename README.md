@@ -2,7 +2,24 @@
 
 A modern, feature-rich anime search application built with React, TypeScript, Tailwind CSS, Redux and Jikan API. Search through thousands of anime titles with advanced filtering, instant search, and a beautiful Netflix-inspired UI.
 
-## 🚀 Live Demo
+## � Table of Contents
+
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [Bonus Implementation](#-bonus-implementation)
+- [Tech Stack](#️-tech-stack)
+- [Installation & Setup](#-installation--setup)
+- [Project Structure](#️-project-structure)
+- [Key Features Explained](#-key-features-explained)
+- [API Integration](#-api-integration)
+- [Design Decisions](#-design-decisions)
+- [Responsive Breakpoints](#-responsive-breakpoints)
+- [Scripts](#-scripts)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
+
+## �🚀 Live Demo
 
 [View Live Application](#)
 
