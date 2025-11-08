@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   searchAnime,
   setSearchQuery,
@@ -16,6 +16,7 @@ const Search = ({ initialValue = '' }: SearchProps) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const { searchFilters } = useAppSelector((state) => state.anime);
   const [inputValue, setInputValue] = useState(initialValue);
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
     null
@@ -40,7 +41,7 @@ const Search = ({ initialValue = '' }: SearchProps) => {
       const timeout = setTimeout(() => {
         if (query.trim()) {
           dispatch(setSearchQuery(query));
-          dispatch(searchAnime({ query, page }));
+          dispatch(searchAnime({ query, page, filters: searchFilters }));
         } else {
           dispatch(setSearchQuery(''));
           dispatch(clearSearchResults());
@@ -49,7 +50,7 @@ const Search = ({ initialValue = '' }: SearchProps) => {
 
       setDebounceTimeout(timeout);
     },
-    [dispatch, debounceTimeout]
+    [dispatch, debounceTimeout, searchFilters]
   );
 
   // Handle input change
