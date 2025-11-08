@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FiSearch } from 'react-icons/fi';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../store/hooks';
 import {
   searchAnime,
@@ -13,10 +14,21 @@ interface SearchProps {
 
 const Search = ({ initialValue = '' }: SearchProps) => {
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [inputValue, setInputValue] = useState(initialValue);
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
     null
   );
+
+  // Clear search input when navigating to detail page
+  useEffect(() => {
+    if (location.pathname.startsWith('/anime/')) {
+      setInputValue('');
+      dispatch(setSearchQuery(''));
+      dispatch(clearSearchResults());
+    }
+  }, [location.pathname, dispatch]);
 
   // Debounced search with API call cancellation
   const debouncedSearch = useCallback(
@@ -30,6 +42,7 @@ const Search = ({ initialValue = '' }: SearchProps) => {
           dispatch(setSearchQuery(query));
           dispatch(searchAnime({ query, page }));
         } else {
+          dispatch(setSearchQuery(''));
           dispatch(clearSearchResults());
         }
       }, 250);
@@ -43,6 +56,12 @@ const Search = ({ initialValue = '' }: SearchProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
+
+    // If on detail page and user starts typing, navigate back to homepage
+    if (location.pathname.startsWith('/anime/') && value.trim()) {
+      navigate('/');
+    }
+
     debouncedSearch(value, 1);
   };
 
@@ -56,15 +75,15 @@ const Search = ({ initialValue = '' }: SearchProps) => {
   }, [debounceTimeout]);
 
   return (
-    <div className="relative mx-auto mb-8 max-w-2xl">
+    <div className="relative w-full">
       <input
         type="text"
         value={inputValue}
         onChange={handleInputChange}
         placeholder="Search for anime..."
-        className="border-muted focus:outline-primary w-full rounded-xl border-2 px-4 py-3 pr-12 text-lg focus:border-transparent focus:outline-2"
+        className="border-muted/30 bg-foreground/10 text-foreground placeholder:text-foreground/50 focus:border-primary w-full rounded-lg border-2 px-4 py-2 pr-10 focus:outline-none"
       />
-      <FiSearch className="text-muted pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xl" />
+      <FiSearch className="text-foreground/50 pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-lg" />
     </div>
   );
 };
