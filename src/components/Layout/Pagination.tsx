@@ -1,4 +1,4 @@
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { searchAnime } from '../../store/animeSlice';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
@@ -16,12 +16,13 @@ const Pagination = ({
   searchQuery,
 }: PaginationProps) => {
   const dispatch = useAppDispatch();
+  const { searchFilters } = useAppSelector((state) => state.anime);
 
   const handlePageChange = (newPage: number) => {
-    if (searchQuery.trim()) {
-      dispatch(searchAnime({ query: searchQuery, page: newPage }));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    dispatch(
+      searchAnime({ query: searchQuery, page: newPage, filters: searchFilters })
+    );
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
