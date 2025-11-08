@@ -2,7 +2,7 @@
 
 A modern, feature-rich anime search application built with React, TypeScript, Tailwind CSS, Redux and Jikan API. Search through thousands of anime titles with advanced filtering, instant search, and a beautiful Netflix-inspired UI.
 
-## � Table of Contents
+## Table of Contents
 
 - [Live Demo](#-live-demo)
 - [Features](#-features)
@@ -19,9 +19,9 @@ A modern, feature-rich anime search application built with React, TypeScript, Ta
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
 
-## �🚀 Live Demo
+## 🚀 Live Demo
 
-[View Live Application](#)
+[View Live Application](https://animeradarbyyusup.netlify.app/)
 
 ## ✨ Features
 
