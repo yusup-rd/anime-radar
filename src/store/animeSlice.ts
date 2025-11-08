@@ -9,6 +9,8 @@ import type {
 interface AnimeState {
   searchResults: Anime[];
   selectedAnime: Anime | null;
+  topAnime: Anime[];
+  recommendedAnime: Anime[];
   loading: boolean;
   error: string | null;
   currentPage: number;
@@ -20,6 +22,8 @@ interface AnimeState {
 const initialState: AnimeState = {
   searchResults: [],
   selectedAnime: null,
+  topAnime: [],
+  recommendedAnime: [],
   loading: false,
   error: null,
   currentPage: 1,
@@ -75,6 +79,55 @@ export const fetchAnimeDetails = createAsyncThunk(
   }
 );
 
+// Async thunk for fetching top anime
+export const fetchTopAnime = createAsyncThunk(
+  'anime/fetchTop',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        'https://api.jikan.moe/v4/top/anime?limit=20'
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch top anime');
+      }
+
+      const data: AnimeSearchResponse = await response.json();
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An error occurred'
+      );
+    }
+  }
+);
+
+// Async thunk for fetching recommended anime
+export const fetchRecommendedAnime = createAsyncThunk(
+  'anime/fetchRecommended',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        'https://api.jikan.moe/v4/recommendations/anime?limit=20'
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommended anime');
+      }
+
+      const data = await response.json();
+      const animeList: Anime[] = data.data.flatMap(
+        (rec: { entry: Anime[] }) => rec.entry
+      );
+      return animeList.slice(0, 20);
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An error occurred'
+      );
+    }
+  }
+);
+
 const animeSlice = createSlice({
   name: 'anime',
   initialState,
@@ -122,6 +175,14 @@ const animeSlice = createSlice({
       .addCase(fetchAnimeDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // Fetch top anime
+      .addCase(fetchTopAnime.fulfilled, (state, action) => {
+        state.topAnime = action.payload;
+      })
+      // Fetch recommended anime
+      .addCase(fetchRecommendedAnime.fulfilled, (state, action) => {
+        state.recommendedAnime = action.payload;
       });
   },
 });
