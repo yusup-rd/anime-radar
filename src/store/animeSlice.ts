@@ -6,6 +6,19 @@ import type {
   AnimeDetailResponse,
 } from '../types/anime';
 
+export interface SearchFilters {
+  type?: string;
+  status?: string;
+  rating?: string;
+  min_score?: number;
+  max_score?: number;
+  genres?: string;
+  genres_exclude?: string;
+  order_by?: string;
+  sort?: string;
+  sfw?: boolean;
+}
+
 interface AnimeState {
   searchResults: Anime[];
   selectedAnime: Anime | null;
@@ -17,6 +30,7 @@ interface AnimeState {
   totalPages: number;
   hasNextPage: boolean;
   searchQuery: string;
+  searchFilters: SearchFilters;
 }
 
 const initialState: AnimeState = {
@@ -30,18 +44,40 @@ const initialState: AnimeState = {
   totalPages: 1,
   hasNextPage: false,
   searchQuery: '',
+  searchFilters: {},
 };
 
 // Async thunk for searching anime
 export const searchAnime = createAsyncThunk(
   'anime/search',
   async (
-    { query, page }: { query: string; page: number },
+    {
+      query,
+      page,
+      filters,
+    }: { query: string; page: number; filters?: SearchFilters },
     { rejectWithValue }
   ) => {
     try {
+      const params = new URLSearchParams();
+
+      if (query) {
+        params.append('q', query);
+      }
+
+      params.append('page', page.toString());
+      params.append('limit', '20');
+
+      if (filters) {
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== '') {
+            params.append(key, value.toString());
+          }
+        });
+      }
+
       const response = await fetch(
-        `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&page=${page}&limit=20`
+        `https://api.jikan.moe/v4/anime?${params.toString()}`
       );
 
       if (!response.ok) {
@@ -135,6 +171,9 @@ const animeSlice = createSlice({
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.searchQuery = action.payload;
     },
+    setSearchFilters: (state, action: PayloadAction<SearchFilters>) => {
+      state.searchFilters = action.payload;
+    },
     clearSearchResults: (state) => {
       state.searchResults = [];
       state.currentPage = 1;
@@ -187,6 +226,10 @@ const animeSlice = createSlice({
   },
 });
 
-export const { setSearchQuery, clearSearchResults, clearSelectedAnime } =
-  animeSlice.actions;
+export const {
+  setSearchQuery,
+  setSearchFilters,
+  clearSearchResults,
+  clearSelectedAnime,
+} = animeSlice.actions;
 export default animeSlice.reducer;
